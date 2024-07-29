@@ -58,4 +58,129 @@ class Boid {
         endShape(CLOSE);
         pop();
     }
+
+    //action methods
+
+    separation(boids, c) {
+        let perceptionRadius = c;
+        let steering = createVector();
+        let total = 0;
+
+        for (const other of boids) {
+            //find distance of boid
+            let distance = dist(
+                this.position.x,
+                this.position.y,
+                other.position.x,
+                other.position.y
+            );
+
+            if (other !== this && distance < perceptionRadius) {
+                let difference = p5.Vector.sub(this.position, other.position);
+                difference.div(distance);
+                steering.add(difference);
+                total++;
+            }
+        }
+
+        if (total > 0) {
+            steering.div(total); //redundant, but still
+            steering.setMag(this.maxSpeed); //desired velocity
+            steering.sub(this.velocity); //calculate force
+            steering.limit(this.maxForce);
+        }
+
+        return steering;
+    }
+
+    avoidance(boids) {
+        let perceptionRadius = 150;
+        let steering = createVector();
+        let total = 0;
+
+        for (const other of boids) {
+            let distance = dist(
+                this.position.x,
+                this.position.y,
+                other.position.x,
+                other.position.y
+            );
+
+            if (other !== this && distance < perceptionRadius) {
+                let difference = p5.Vector.sub(this.position, other.position);
+                difference.div(distance);
+                steering.add(difference);
+                total++;
+            }
+        }
+
+        if (total > 0) {
+            steering.div(total); //redundant, but still
+            steering.setMag(this.maxSpeed); //desired velocity
+            steering.sub(this.velocity); //calculate force
+            steering.limit(this.maxForce);
+        }
+
+        return steering;
+    }
+
+    cohesion(boids, c) {
+        let perceptionRadius = c;
+        let steering = createVector();
+        let total = 0;
+
+        for (const other of boids) {
+            let distance = dist(
+                this.position.x,
+                this.position.y,
+                other.position.x,
+                other.position.y
+            );
+
+            if (other !== this && distance < perceptionRadius) {
+                steering.add(other.position);
+                total++;
+            }
+        }
+
+        if (total > 0) {
+            steering.div(total); //average
+            steering.sub(this.position); //desired velocity
+            steering.setMag(this.maxSpeed);
+            steering.sub(this.velocity); //calculate force
+            steering.limit(this.maxForce);
+        }
+
+        return steering;
+    }
+
+    follow(boids, c) {
+        let perceptionRadius = c;
+        let steering = createVector();
+        let total = 0;
+
+        for (const other of boids) {
+            let distance = dist(
+                this.position.x,
+                this.position.y,
+                other.position.x,
+                other.position.y
+            );
+
+            if (other !== this && distance < perceptionRadius) {
+                steering.add(other.position);
+                total++;
+            }
+        }
+
+        if (total > 0) {
+            steering.div(total); //average
+            steering.sub(this.position); //desired velocity
+            steering.setMag(this.maxSpeed * 1.25);
+            steering.sub(this.velocity); //calculate force
+            steering.limit(this.maxForce);
+        }
+
+        return steering;
+    }
 }
