@@ -183,4 +183,109 @@ class Boid {
 
         return steering;
     }
+
+    alignment(boids, c) {
+        let perceptionRadius = c;
+        let steering = createVector();
+        let total = 0;
+
+        for (const other of boids) {
+            let distance = dist(
+                this.position.x,
+                this.position.y,
+                other.position.x,
+                other.position.y
+            );
+
+            if (other !== this && distance < perceptionRadius) {
+                steering.add(other.velocity);
+                total++;
+            }
+        }
+
+        if (total > 0) {
+            steering.div(total); //average
+            steering.setMag(this.maxSpeed); //desired velocity
+            steering.sub(this.velocity); //calculate force
+            steering.limit(this.maxForce);
+        }
+
+        return steering;
+    }
+
+    //align with leader
+    sedia(boids, c) {
+        let perceptionRadius = c;
+        let steering = createVector();
+        let total = 0;
+
+        for (const other of boids) {
+            let distance = dist(
+                this.position.x,
+                this.position.y,
+                other.position.x,
+                other.position.y
+            );
+
+            if (other !== this && distance < perceptionRadius) {
+                steering.add(other.velocity);
+                total++;
+            }
+        }
+
+        if (total > 0) {
+            steering.div(total); //average
+            steering.setMag(this.maxSpeed); //desired velocity
+            steering.sub(this.velocity); //calculate force
+            steering.limit(this.maxForce);
+        }
+
+        return steering;
+    }
+
+    insideObj(objects, b) {
+        for (let obj of objects) {
+            if (
+                this.position.x < obj.position.x + obj.r &&
+                this.position.x > obj.position.x - obj.r &&
+                this.position.y - 16 < obj.position.y + obj.r &&
+                this.position.y - 16 > obj.position.y - obj.r
+            ) {
+                if (b == "boid" && this.health < 255) {
+                    this.health += 5;
+                } else if (this.health > 0) {
+                    //print('you got hit')
+                    this.health -= 5;
+                }
+            } else if (
+                this.position.x + 8 < obj.position.x + obj.r &&
+                this.position.x + 8 > obj.position.x - obj.r &&
+                this.position.y + 16 < obj.position.y + obj.r &&
+                this.position.y + 16 > obj.position.y - obj.r
+            ) {
+                if (b == "boid" && this.health < 255) {
+                    this.health += 5;
+                } else if (this.health > 0) {
+                    //print('you got hit')
+                    this.health -= 5;
+                }
+            } else if (
+                this.position.x - 8 < obj.position.x + obj.r &&
+                this.position.x - 8 > obj.position.x - obj.r &&
+                this.position.y + 16 < obj.position.y + obj.r &&
+                this.position.y + 16 > obj.position.y - obj.r
+            ) {
+                if (b == "boid" && this.health < 255) {
+                    this.health += 5;
+                } else if (this.health > 0) {
+                    //print('you got hit')
+                    this.health -= 5;
+                }
+            }
+        }
+
+        if (this.health > 255) {
+            this.health = 255;
+        }
+    }
 }
