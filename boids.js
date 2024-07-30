@@ -288,4 +288,46 @@ class Boid {
             this.health = 255;
         }
     }
+
+    flock(boids, objects, predator, ringleads) {
+        //print(50 - map(this.health, 0, 255, 49, 0))
+
+        //set variables
+        let sep = this.separation(boids, 1 + map(this.health, 0, 255, 0, 49));
+        let coh = this.cohesion(boids, 100 - map(this.health, 0, 255, 0, 75));
+        let ali = this.alignment(boids, 50);
+        let avo = this.avoidance(objects);
+        let pre = this.separation(predator, 200);
+        let res = this.follow(ringleads, 100 - map(this.health, 0, 255, 50, 100));
+        let sed = this.sedia(ringleads, 75 - map(this.health, 0, 255, 25, 75));
+
+        this.insideObj(boids, "boid");
+        this.insideObj(objects, "obj");
+        this.insideObj(predator, "eagle");
+
+        this.filler.y = this.health;
+
+        //apply all the forces
+        this.applyForce(sep);
+        this.applyForce(coh);
+        this.applyForce(ali);
+        this.applyForce(avo);
+        this.applyForce(pre);
+        this.applyForce(res);
+        this.applyForce(sed);
+    }
+
+    hunt(boids, objects, flock) {
+        //set standard values
+        let sep = this.separation(boids, 100);
+        let coh = this.cohesion(flock, 25);
+        let ali = this.alignment(flock, 50);
+        let avo = this.avoidance(objects);
+
+        //apply all the forces
+        this.applyForce(sep);
+        this.applyForce(coh);
+        this.applyForce(ali);
+        this.applyForce(avo);
+    }
 }
